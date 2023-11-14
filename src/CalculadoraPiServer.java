@@ -35,7 +35,6 @@ public class CalculadoraPiServer {
             int iterations1 = (int) in.readObject();
             int iterations2 = (int) in.readObject();
 
-            // Use Thread.join() to wait for both threads to finish before sending results
             Thread thread1 = new Thread(() -> calculateAndPrintPi(iterations1, "Thread 1"));
             Thread thread2 = new Thread(() -> calculateAndPrintPi(iterations2, "Thread 2"));
 
@@ -45,7 +44,6 @@ public class CalculadoraPiServer {
             thread1.join();
             thread2.join();
 
-            // Agora, você pode criar a lista final e enviá-la para o cliente
             List<BigDecimal> results = new ArrayList<>();
             results.add(thread1Result);
             results.add(thread2Result);
@@ -64,7 +62,7 @@ public class CalculadoraPiServer {
         BigDecimal t = new BigDecimal("0.25");
         BigDecimal x = BigDecimal.ONE;
         BigDecimal y;
-        BigDecimal result = BigDecimal.ZERO;  // Adicione essa variável para armazenar temporariamente o resultado da thread
+        BigDecimal result = BigDecimal.ZERO;
 
         for (int i = 0; i < iterations; i++) {
             y = a;
@@ -73,12 +71,10 @@ public class CalculadoraPiServer {
             t = t.subtract(x.multiply(y.subtract(a).multiply(y.subtract(a))));
             x = x.multiply(BigDecimal.valueOf(2));
 
-            // Resultado parcial com identificação da thread
             result = a.add(b).multiply(a.add(b)).divide(t.multiply(BigDecimal.valueOf(4)), MathContext.DECIMAL128);
             System.out.println(threadName + " - Iteração " + (i + 1) + ": " + result);
         }
 
-        // Atualize a variável de resultado da thread correspondente
         if (threadName.equals("Thread 1")) {
             thread1Result = result;
         } else {
