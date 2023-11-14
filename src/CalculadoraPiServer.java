@@ -17,7 +17,7 @@ public class CalculadoraPiServer {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Conexão recebida: " + clientSocket);
 
-                new Thread(() -> handleClient(clientSocket)).start();
+                handleClient(clientSocket);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,9 +32,14 @@ public class CalculadoraPiServer {
             int iterations1 = (int) in.readObject();
             int iterations2 = (int) in.readObject();
 
+            // Calcula os resultados sequencialmente sem criar novas threads
+            BigDecimal result1 = calculatePi(iterations1, "Thread 1");
+            BigDecimal result2 = calculatePi(iterations2, "Thread 2");
+
+            // Cria a lista final e envia para o cliente
             List<BigDecimal> results = new ArrayList<>();
-            results.add(calculatePi(iterations1, "Thread 1"));
-            results.add(calculatePi(iterations2, "Thread 2"));
+            results.add(result1);
+            results.add(result2);
 
             out.writeObject(results);
 
@@ -45,11 +50,14 @@ public class CalculadoraPiServer {
     }
 
     private static BigDecimal calculatePi(int iterations, String threadName) {
+        // Seu código de cálculo Pi permanece inalterado
+
         BigDecimal a = BigDecimal.ONE;
         BigDecimal b = BigDecimal.ONE.divide(BigDecimal.valueOf(Math.sqrt(2)), MathContext.DECIMAL128);
         BigDecimal t = new BigDecimal("0.25");
         BigDecimal x = BigDecimal.ONE;
         BigDecimal y;
+        BigDecimal result = BigDecimal.ZERO;
 
         for (int i = 0; i < iterations; i++) {
             y = a;
@@ -58,11 +66,10 @@ public class CalculadoraPiServer {
             t = t.subtract(x.multiply(y.subtract(a).multiply(y.subtract(a))));
             x = x.multiply(BigDecimal.valueOf(2));
 
-            // Resultado parcial com identificação da thread
-            BigDecimal piApproximation = a.add(b).multiply(a.add(b)).divide(t.multiply(BigDecimal.valueOf(4)), MathContext.DECIMAL128);
-            System.out.println(threadName + " - Iteração " + (i + 1) + ": " + piApproximation);
+            result = a.add(b).multiply(a.add(b)).divide(t.multiply(BigDecimal.valueOf(4)), MathContext.DECIMAL128);
+            System.out.println(threadName + " - Iteração " + (i + 1) + ": " + result);
         }
 
-        return a.add(b).multiply(a.add(b)).divide(t.multiply(BigDecimal.valueOf(4)), MathContext.DECIMAL128);
+        return result;
     }
 }
