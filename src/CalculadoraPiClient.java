@@ -30,6 +30,12 @@ public class CalculadoraPiClient {
         }
     }
 
+    // Loop que continuar até que o usuário insira um número inteiro positivo;
+    /*
+    Dentro do loop a mensagem do prompt será exibida e o método irá converter a entrada
+    do usuário para um número inteiro. Se a entrada não for válida, um erro será exibido com
+    uma mensagem. Por fim retornará o número de iterações inserido pelo usuário.
+    */
     private static int getNumberOfIterationsFromUser(String prompt) {
         Scanner scanner = new Scanner(System.in);
         int iterations = 0;

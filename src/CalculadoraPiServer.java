@@ -56,31 +56,45 @@ public class CalculadoraPiServer {
         }
     }
 
+    /*
+    Código que realiza uma série de iterações usando cálculos específicos para aproximar os
+    dígitos de π. Inspirado no algoritmo de Gauss-Legendre.
+     */
     private static void calculateAndPrintPi(int iterations, String threadName) {
         BigDecimal a = BigDecimal.ONE;
-        BigDecimal b = BigDecimal.ONE.divide(BigDecimal.valueOf(Math.sqrt(2)), MathContext.DECIMAL128);
+        // 1 dividido pela raíz quadrada de 2
+        BigDecimal b = BigDecimal.ONE.divide(BigDecimal.valueOf(Math.sqrt(2)), MathContext.DECIMAL128); // Precisão de 34 dígitos decimais
         BigDecimal t = new BigDecimal("0.25");
         BigDecimal x = BigDecimal.ONE;
         BigDecimal y;
         BigDecimal result = BigDecimal.ZERO;
 
         for (int i = 0; i < iterations; i++) {
+            // 'y' recebe valor de 'a'
             y = a;
+            // 'a' é atualizado para a média e 'a' e 'b'
             a = a.add(b).divide(BigDecimal.valueOf(2), MathContext.DECIMAL128);
+            // 'b' é atualizada para a raiz quadrada de 'b' multiplicado por 'y'
             b = BigDecimal.valueOf(Math.sqrt(b.multiply(y).doubleValue()));
+            // 't' é atualizado por 'x' multiplicado por 'y' subrtraindo por 'a' multiplicando o valor de 'y' subtraindo por 'a'
             t = t.subtract(x.multiply(y.subtract(a).multiply(y.subtract(a))));
+            // 'x' é multiplicado por 2
             x = x.multiply(BigDecimal.valueOf(2));
 
+            // result é atualizado usando a fórmula para a aproximação de π
             result = a.add(b).multiply(a.add(b)).divide(t.multiply(BigDecimal.valueOf(4)), MathContext.DECIMAL128);
+            // Impresso a respectiva interação e seu valor
             System.out.println(threadName + " - Iteração " + (i + 1) + ": " + result);
         }
 
+        // Atribuição de valor a respectiva thread
         if (threadName.equals("Thread 1")) {
             thread1Result = result;
         } else {
             thread2Result = result;
         }
 
+        // Resultado final
         System.out.println(threadName + " - Resultado Final: " + result);
     }
 
