@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PasswordBreaker implements Runnable {
-    private static final String TARGET_PASSWORD = "fsvsa";
+    private static String TARGET_PASSWORD;
     private static final int MAX_PASSWORD_LENGTH = 5;
     private final BufferedReader reader;
     private final PrintWriter writer;
@@ -23,11 +23,25 @@ public class PasswordBreaker implements Runnable {
 
     @Override
     public void run() {
+
+        try {
+            TARGET_PASSWORD = reader.readLine();
+            System.out.println("Senha recebida do servidor: " + TARGET_PASSWORD);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         long startTime = System.currentTimeMillis();
         bruteForce("");
         long endTime = System.currentTimeMillis();
 
         String threadInfo = "Thread " + Thread.currentThread().getId();
+        if (senhaDescoberta) {
+            writer.println(threadInfo + " Senha encontrada: " + TARGET_PASSWORD);
+            System.out.println(threadInfo + " Senha encontrada: " + TARGET_PASSWORD);
+        } else {
+            writer.println(threadInfo + " Senha não encontrada");
+            System.out.println(threadInfo + " Senha não encontrada");
+        }
         writer.println(threadInfo + " Tempo total: " + (endTime - startTime) + " ms");
         System.out.println(threadInfo + " Tempo total: " + (endTime - startTime) + " ms");
     }

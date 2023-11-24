@@ -20,8 +20,11 @@ public class Client {
             String serverMessage = reader.readLine();
             System.out.println("Servidor diz: " + serverMessage);
 
-            // Iniciar o algoritmo de quebra de senha no cliente
-            new Thread(new PasswordBreaker(reader, writer)).start();
+            // Se a mensagem indicar que pode iniciar o algoritmo, então inicie o ClientHandler
+            if (serverMessage.equals("Você pode iniciar o algoritmo de quebra de senha.")) {
+                new Thread(new PasswordBreaker(reader, writer)).start();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
