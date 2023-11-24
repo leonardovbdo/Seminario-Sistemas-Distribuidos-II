@@ -47,11 +47,10 @@ public class PasswordBreaker {
             }
 
             if (!senhaDescoberta && prefix.length() < MAX_PASSWORD_LENGTH) {
-                System.out.println("Thread " + Thread.currentThread().getId() +
-                        " tentando senha: " + prefix + " (Tentativas: " + tentativas + ")");
-                tentativas++;
-
                 for (char c : characters) {
+                    tentativas++; // Mova a contagem de tentativas para cá
+                    System.out.println("Thread " + Thread.currentThread().getId() +
+                            " tentando senha: " + prefix + c + " (Tentativas: " + tentativas + ")");
                     bruteForce(prefix + c);
                 }
             }
